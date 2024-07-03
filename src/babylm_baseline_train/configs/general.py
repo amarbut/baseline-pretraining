@@ -47,6 +47,10 @@ def add_func_in_general(
             key_params['get_model_func'] = functools.partial(
                     helper.get_roberta_func,
                     model_name=model_name)
+        elif model_name == 'babylm-test':
+            key_params['get_model_func'] = functools.partial(
+                    helper.get_roberta_func,
+                    model_name=model_name)
         elif model_name is not None:
             raise NotImplementedError(f"model name: {model_name}")
         key_params['exp_id'] = exp_name

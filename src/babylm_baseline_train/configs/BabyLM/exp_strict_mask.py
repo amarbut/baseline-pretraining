@@ -62,3 +62,12 @@ add_exp_seeds(
         seeds=[1], 
         data_func=babyLM.get_babyLM_10M,
         model_name='babylm-base')
+
+
+add_exp_seeds(
+        exp_names=[
+            'babylm-test',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='babylm-test')
