@@ -39,3 +39,20 @@ def get_babyLM_100M(seq_len=128, tokenizer=None, just_dataset=False):
             name='babyLM-100M',
             )
     return dataset_builder.get_group_dataset(just_dataset=just_dataset)
+    
+def get_sentence_shuffle(seq_len=128, tokenizer=None, just_dataset=False):
+    dataset_builder = BabyLM(
+            seq_len=seq_len,
+            tokenizer=tokenizer,
+            name='shuffle_sent',
+            )
+    return dataset_builder.get_group_dataset(just_dataset=just_dataset)
+
+def get_corpus_shuffle(seq_len=128, tokenizer=None, just_dataset=False):
+    dataset_builder = BabyLM(
+            seq_len=seq_len,
+            tokenizer=tokenizer,
+            name='shuffle_corp',
+            )
+    return dataset_builder.get_group_dataset(just_dataset=just_dataset)
+    

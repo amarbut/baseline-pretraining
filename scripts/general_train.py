@@ -16,9 +16,14 @@ from babylm_baseline_train.basic_param_setter import ParamsBuilder
 import babylm_baseline_train.models.helper as helper
 from babylm_baseline_train.train.tk_funcs import\
         get_tokenizer_func
-from babylm_baseline_train.datasets.babyLM import get_babyLM_10M
+from babylm_baseline_train.datasets import babyLM
 from babylm_baseline_train.datasets.utils import collate_fn
 from babylm_baseline_train.train.utils import get_setting_func
+
+data_dict = {"babyLM_10M": babyLM.get_babyLM_10M,
+             "babyLM_100M": babyLM.get_babyLM_100M,
+             "shuffle_sent": babyLM.get_sentence_shuffle,
+             "shuffle_corp": babyLM.get_corpus_shuffle,}
 
 
 def get_parser():
@@ -42,6 +47,10 @@ def get_parser():
             '--opt_model_size', 
             default='125m', type=str, 
             action='store')
+    parser.add_argument(
+            '--training_data', 
+            default='babyLM_10M', type=str, 
+            action='store')
     return parser
 
 
@@ -57,7 +66,7 @@ def get_key_params(args):
             exp_id=args.exp_id, col_name='babylm_test',
             get_model_func=get_model_func,
             get_dataset_func=functools.partial(
-                get_babyLM_10M, tokenizer=tokenizer),
+                data_dict[args.training_data], tokenizer=tokenizer),
             optimizer_cfg=dict(
                 type='AdamW', lr=1e-4, weight_decay=0.1,
                 ),
