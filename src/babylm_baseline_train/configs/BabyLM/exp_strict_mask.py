@@ -71,3 +71,17 @@ add_exp_seeds(
         seeds=[1], 
         data_func=babyLM.get_babyLM_10M,
         model_name='babylm-test')
+
+add_exp_seeds(
+        exp_names=[
+            'shuffle-sentence',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_sentence_shuffle)
+
+add_exp_seeds(
+        exp_names=[
+            'shuffle-corpus',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_corpus_shuffle)

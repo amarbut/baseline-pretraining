@@ -6,6 +6,11 @@ from transformers import DataCollatorForLanguageModeling
 from itertools import product
 import copy
 
+models = ['roberta-large',
+          'babylm-base',
+          'babylm-test',
+          'shuffle-sentence',
+          'shuffle-corpus']
 
 def add_collate_fn_for_MLM(key_params, tokenizer):
     if 'add_train_loader_kwargs' not in key_params:
@@ -39,15 +44,7 @@ def add_func_in_general(
                     opt_model_size='350m')
         elif model_name == 'roberta-base':
             key_params['get_model_func'] = helper.get_roberta_func
-        elif model_name == 'roberta-large':
-            key_params['get_model_func'] = functools.partial(
-                    helper.get_roberta_func,
-                    model_name=model_name)
-        elif model_name == 'babylm-base':
-            key_params['get_model_func'] = functools.partial(
-                    helper.get_roberta_func,
-                    model_name=model_name)
-        elif model_name == 'babylm-test':
+        elif model_name in models:
             key_params['get_model_func'] = functools.partial(
                     helper.get_roberta_func,
                     model_name=model_name)
