@@ -18,12 +18,9 @@ class BabyLM(BaseGroupDataset):
         self.name = name
 
     def get_dataset(self):
-        if self.name in ['babyLM-10M', 'babyLM-100M']:
-            loader = self.name
-        else:
-            loader = 'babyLM-10M'
+        
         self.dataset = hf_loaders.get_babyLM(
-                name=loader,
+                name=self.name,
                 split="train")
 
 
