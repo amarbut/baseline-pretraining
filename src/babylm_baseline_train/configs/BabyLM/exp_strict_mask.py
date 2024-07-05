@@ -1,7 +1,7 @@
 import babylm_baseline_train.datasets.babyLM as babyLM
 from babylm_baseline_train.configs.general import\
         add_func_in_general, get_general_data_func,\
-        add_collate_fn_for_MLM
+        add_collate_fn_for_MLM, add_collate_fn_for_ascii, add_collate_fn_for_rand
 import functools
 from itertools import product
 import babylm_baseline_train.train.tk_funcs as tk_funcs
@@ -20,6 +20,7 @@ def add_exp_seeds(
         exp_names, seeds, data_func,
         model_name='roberta-base',
         tokenizer=None,
+        collator= add_collate_fn_for_MLM
         ):
     for exp_name, seed in zip(exp_names, seeds):
         if tokenizer is None:
@@ -36,7 +37,7 @@ def add_exp_seeds(
                 seed=seed,
                 model_name=model_name,
                 post_func=functools.partial(
-                    add_collate_fn_for_MLM,
+                    collator,
                     tokenizer=MLM_tokenizer),
                 **KWARGS)
 
@@ -85,3 +86,11 @@ add_exp_seeds(
             ], 
         seeds=[1], 
         data_func=babyLM.get_corpus_shuffle)
+
+add_exp_seeds(
+        exp_names=[
+            'ascii',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        collator=add_collate_fn_for_ascii)

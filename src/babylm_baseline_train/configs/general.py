@@ -5,12 +5,15 @@ import functools
 from transformers import DataCollatorForLanguageModeling
 from itertools import product
 import copy
+from babylm_baseline_train.models.alajrami_models import (DataCollatorForAsciiValuePrediction,
+                             DataCollatorForRandomValuePrediction)
 
 models = ['roberta-large',
           'babylm-base',
           'babylm-test',
           'shuffle-sentence',
-          'shuffle-corpus']
+          'shuffle-corpus',
+          'ascii']
 
 def add_collate_fn_for_MLM(key_params, tokenizer):
     if 'add_train_loader_kwargs' not in key_params:
@@ -23,6 +26,24 @@ def add_collate_fn_for_MLM(key_params, tokenizer):
                 )})
     return key_params
 
+def add_collate_fn_for_ascii(key_params, tokenizer):
+    if 'add_train_loader_kwargs' not in key_params:
+        key_params['add_train_loader_kwargs'] = {}
+    key_params['add_train_loader_kwargs'].update(
+            {'collate_fn': DataCollatorForAsciiValuePrediction(
+                tokenizer = tokenizer,
+                mask_prob = 0.15)})
+    return key_params
+
+def add_collate_fn_for_rand(key_params, tokenizer):
+    if 'add_train_loader_kwargs' not in key_params:
+        key_params['add_train_loader_kwargs'] = {}
+    key_params['add_train_loader_kwargs'].update(
+            {'collate_fn': DataCollatorForRandomValuePrediction(
+                tokenizer=tokenizer,
+                mask_prob=0.15,
+                )})
+    return key_params
 
 def add_func_in_general(
         func_name,
