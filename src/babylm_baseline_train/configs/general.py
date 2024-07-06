@@ -13,7 +13,8 @@ models = ['roberta-large',
           'babylm-test',
           'shuffle-sentence',
           'shuffle-corpus',
-          'ascii']
+          'ascii',
+          'rand']
 
 def add_collate_fn_for_MLM(key_params, tokenizer):
     if 'add_train_loader_kwargs' not in key_params:

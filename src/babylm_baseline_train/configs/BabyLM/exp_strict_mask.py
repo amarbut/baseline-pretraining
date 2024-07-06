@@ -94,3 +94,11 @@ add_exp_seeds(
         seeds=[1], 
         data_func=babyLM.get_babyLM_10M,
         collator=add_collate_fn_for_ascii)
+
+add_exp_seeds(
+        exp_names=[
+            'rand',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        collator=add_collate_fn_for_rand)
