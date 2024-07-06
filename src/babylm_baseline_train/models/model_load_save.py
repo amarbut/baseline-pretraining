@@ -35,6 +35,6 @@ if __name__ == '__main__':
     kwargs = vars(parser.parse_args())
     
     model, tokenizer = load_roberta(**kwargs)
-    model.save_pretrained(f'{kwargs.model_loc}/hf_{kwargs.epoch}')
-    tokenizer.save_pretrained(f'{kwargs.model_loc}/hf_{kwargs.epoch}')
+    model.save_pretrained(f'{kwargs["model_loc"]}/hf_{kwargs["epoch"]}')
+    tokenizer.save_pretrained(f'{kwargs["model_loc"]}/hf_{kwargs["epoch"]}')
     
