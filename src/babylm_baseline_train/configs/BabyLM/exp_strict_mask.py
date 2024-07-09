@@ -58,6 +58,14 @@ add_exp_seeds(
 
 add_exp_seeds(
         exp_names=[
+            'normal_init',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='normal_init/hf_20')
+
+add_exp_seeds(
+        exp_names=[
             'babylm-base',
             ], 
         seeds=[1], 
