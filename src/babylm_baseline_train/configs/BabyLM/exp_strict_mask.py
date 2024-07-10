@@ -9,7 +9,7 @@ import babylm_baseline_train.train.tk_funcs as tk_funcs
 
 KWARGS = dict(
         all_things=globals(),
-        specify_iter=[],,
+        specify_iter=[],
         )
 DATA_KWARGS = dict(
         max_epochs=20, ckpt_save_interval=15,
@@ -107,6 +107,14 @@ add_exp_seeds(
         data_func=babyLM.get_babyLM_10M,
         collator=add_collate_fn_for_rand)
 
+add_exp_seeds(
+        exp_names=[
+            'roberta-baby',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='roberta-base',
+        specify_epoch=retrain_epochs)
 
 add_exp_seeds(
         exp_names=[
@@ -164,5 +172,5 @@ add_exp_seeds(
             ], 
         seeds=[1], 
         data_func=babyLM.get_babyLM_10M,
-        model_name='normal_init/hf_20',
+        model_name='shuffle_index/hf_20',
         specify_epoch=retrain_epochs)

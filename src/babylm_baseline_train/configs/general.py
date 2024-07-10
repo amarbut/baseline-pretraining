@@ -14,7 +14,7 @@ models = ['roberta-large',
           'ascii',
           'rand',
           'babylm-base',
-          'babylm-test',]
+          'babylm-test']
 pretrained = ['normal_init/hf_20',
               'ascii/hf_20',
               'rand/hf_20',
