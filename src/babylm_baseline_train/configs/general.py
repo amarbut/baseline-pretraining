@@ -12,9 +12,10 @@ models = ['roberta-large',
           'shuffle-sentence',
           'shuffle-corpus',
           'ascii',
-          'rand']
-pretrained = ['babylm-base',
-              'babylm-test',
+          'rand',
+          'babylm-base',
+          'babylm-test',]
+pretrained = [
               'normal_init/hf_20']
 
 def add_collate_fn_for_MLM(key_params, tokenizer):

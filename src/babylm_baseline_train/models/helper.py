@@ -11,7 +11,7 @@ DEBUG = int(os.environ.get(
         'DEBUG',
         '0')) == 1
 
-from .train.env_params import MODEL_SAVE_FOLDER
+from ..train.env_params import MODEL_SAVE_FOLDER
 
 def get_opt_func(opt_model_size='125m'):
     model_name = f"facebook/opt-{opt_model_size}"
