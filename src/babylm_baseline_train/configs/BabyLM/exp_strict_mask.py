@@ -42,6 +42,7 @@ def add_exp_seeds(
                 post_func=functools.partial(
                     collator,
                     tokenizer=MLM_tokenizer),
+                specify_epoch=specify_epoch
                 **KWARGS)
 
 add_exp_seeds(
