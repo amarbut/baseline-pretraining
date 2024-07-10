@@ -6,6 +6,8 @@ import torch
 from transformers import AutoTokenizer
 from transformers import GPT2Tokenizer
 
+from .env_params import MODEL_SAVE_FOLDER
+
 
 def get_gpt2_tokenizer_func(model_name='gpt2'):
     tokenizer = GPT2Tokenizer.from_pretrained(model_name)
@@ -14,7 +16,10 @@ def get_gpt2_tokenizer_func(model_name='gpt2'):
 
 def get_roberta_tokenizer_func(model_name="roberta-base"):
     from transformers import RobertaTokenizer
-    tokenizer = RobertaTokenizer.from_pretrained(model_name)
+    try:
+        tokenizer = RobertaTokenizer.from_pretrained(model_name)
+    except:
+        model_name = MODEL_SAVE_FOLDER + model_name
     return tokenizer
 
 def get_t5_tokenizer_func(model_name="t5-base"):
