@@ -11,6 +11,7 @@ DEBUG = int(os.environ.get(
         'DEBUG',
         '0')) == 1
 
+from .train.env_params import MODEL_SAVE_FOLDER
 
 def get_opt_func(opt_model_size='125m'):
     model_name = f"facebook/opt-{opt_model_size}"
@@ -23,6 +24,13 @@ def get_roberta_func(model_name="roberta-base", tokenizer=None):
     from transformers import RobertaConfig, RobertaForMaskedLM
     config = RobertaConfig.from_pretrained(model_name)
     model = RobertaForMaskedLM(config)
+    if tokenizer is not None:
+        model.resize_token_embeddings(len(tokenizer))
+    return model
+
+def get_pretrained_func(model_name="roberta-base", tokenizer=None):
+    from transformers import RobertaForMaskedLM
+    model = RobertaForMaskedLM.from_pretrained(MODEL_SAVE_FOLDER+model_name)
     if tokenizer is not None:
         model.resize_token_embeddings(len(tokenizer))
     return model
