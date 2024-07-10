@@ -9,18 +9,21 @@ import babylm_baseline_train.train.tk_funcs as tk_funcs
 
 KWARGS = dict(
         all_things=globals(),
-        specify_iter=[],
-        specify_epoch=[5, 10, 20],
+        specify_iter=[],,
         )
 DATA_KWARGS = dict(
         max_epochs=20, ckpt_save_interval=15,
         col_name='babyLM_10M')
 
+pretrain_epochs = [5, 10, 20]
+retrain_epochs = list(range(1,21))
+
 def add_exp_seeds(
         exp_names, seeds, data_func,
         model_name='roberta-base',
         tokenizer=None,
-        collator= add_collate_fn_for_MLM
+        collator= add_collate_fn_for_MLM,
+        specify_epoch=pretrain_epochs
         ):
     for exp_name, seed in zip(exp_names, seeds):
         if tokenizer is None:
@@ -56,13 +59,6 @@ add_exp_seeds(
         data_func=babyLM.get_babyLM_10M,
         model_name='roberta-large')
 
-add_exp_seeds(
-        exp_names=[
-            'normal_init',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='normal_init/hf_20')
 
 add_exp_seeds(
         exp_names=[
@@ -110,3 +106,63 @@ add_exp_seeds(
         seeds=[1], 
         data_func=babyLM.get_babyLM_10M,
         collator=add_collate_fn_for_rand)
+
+
+add_exp_seeds(
+        exp_names=[
+            'normal_init',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='normal_init/hf_20',
+        specify_epoch=retrain_epochs)
+
+
+add_exp_seeds(
+        exp_names=[
+            'rt_shuffle-sentence',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='shuffle-sentence/hf_20',
+        specify_epoch=retrain_epochs)
+
+
+add_exp_seeds(
+        exp_names=[
+            'rt_shuffle-corpus',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='shuffle-corpus/hf_20',
+        specify_epoch=retrain_epochs)
+
+
+add_exp_seeds(
+        exp_names=[
+            'rt_rand',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='rand/hf_20',
+        specify_epoch=retrain_epochs)
+
+
+add_exp_seeds(
+        exp_names=[
+            'rt_ascii',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='ascii/hf_20',
+        specify_epoch=retrain_epochs)
+
+
+add_exp_seeds(
+        exp_names=[
+            'rt_shuffle-index',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_10M,
+        model_name='normal_init/hf_20',
+        specify_epoch=retrain_epochs)
