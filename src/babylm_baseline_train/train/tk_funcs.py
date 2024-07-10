@@ -20,6 +20,7 @@ def get_roberta_tokenizer_func(model_name="roberta-base"):
         tokenizer = RobertaTokenizer.from_pretrained(model_name)
     except:
         model_name = MODEL_SAVE_FOLDER + model_name
+        tokenizer = RobertaTokenizer.from_pretrained(model_name)
     return tokenizer
 
 def get_t5_tokenizer_func(model_name="t5-base"):
