@@ -123,7 +123,7 @@ add_exp_seeds(
             ], 
         seeds=[1], 
         data_func=babyLM.get_babyLM_10M,
-        model_name='normal_init/hf_20',
+        model_name='stand_norm/hf_20',
         specify_epoch=retrain_epochs)
 
 
