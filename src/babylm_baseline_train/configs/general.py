@@ -14,13 +14,16 @@ models = ['roberta-large',
           'ascii',
           'rand',
           'babylm-base',
-          'babylm-test']
+          'babylm-test',
+          'warmup_save']
 pretrained = ['normal_init/hf_20',
               'ascii/hf_20',
               'rand/hf_20',
               'shuffle-sentence/hf_20',
               'shuffle-corpus/hf_20',
-              'shuffle_index/hf_20']
+              'shuffle_index/hf_20',
+              'stand_norm/hf_20',
+              'roberta_init']
 
 def add_collate_fn_for_MLM(key_params, tokenizer):
     if 'add_train_loader_kwargs' not in key_params:

@@ -9,21 +9,23 @@ import babylm_baseline_train.train.tk_funcs as tk_funcs
 
 KWARGS = dict(
         all_things=globals(),
-        specify_iter=[],
         )
 DATA_KWARGS = dict(
-        max_epochs=20, ckpt_save_interval=15,
+        ckpt_save_interval=15,
         col_name='babyLM_10M')
 
 pretrain_epochs = [5, 10, 20]
 retrain_epochs = list(range(1,21))
+warmup = [5000]
 
 def add_exp_seeds(
         exp_names, seeds, data_func,
         model_name='roberta-base',
         tokenizer=None,
         collator= add_collate_fn_for_MLM,
-        specify_epoch=pretrain_epochs
+        specify_epoch=pretrain_epochs,
+        specify_iter = [], 
+        max_epochs = 20
         ):
     for exp_name, seed in zip(exp_names, seeds):
         if tokenizer is None:
@@ -36,6 +38,7 @@ def add_exp_seeds(
                 data_func=get_general_data_func(
                     data_func,
                     tokenizer=MLM_tokenizer,
+                    max_epochs = max_epochs,
                     **DATA_KWARGS),
                 seed=seed,
                 model_name=model_name,
@@ -43,135 +46,154 @@ def add_exp_seeds(
                     collator,
                     tokenizer=MLM_tokenizer),
                 specify_epoch=specify_epoch,
+                specify_iter=specify_iter,
                 **KWARGS)
 
-add_exp_seeds(
-        exp_names=[
-            'roberta_s1',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M)
+# add_exp_seeds(
+#         exp_names=[
+#             'warmup_save',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='roberta-base',
+#         specify_epoch=[],
+#         specify_iter=warmup, max_epochs=1)
 
 add_exp_seeds(
         exp_names=[
-            'roberta_large_s1',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='roberta-large')
-
-
-add_exp_seeds(
-        exp_names=[
-            'babylm-base',
+            'roberta_init',
             ], 
         seeds=[1], 
         data_func=babyLM.get_babyLM_10M,
-        model_name='babylm-base')
+        model_name='roberta_init')
+
+# add_exp_seeds(
+#         exp_names=[
+#             'roberta_s1',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M)
+
+# add_exp_seeds(
+#         exp_names=[
+#             'roberta_large_s1',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='roberta-large')
 
 
-add_exp_seeds(
-        exp_names=[
-            'babylm-test',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='babylm-test')
-
-add_exp_seeds(
-        exp_names=[
-            'shuffle-sentence',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_sentence_shuffle)
-
-add_exp_seeds(
-        exp_names=[
-            'shuffle-corpus',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_corpus_shuffle)
-
-add_exp_seeds(
-        exp_names=[
-            'ascii',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        collator=add_collate_fn_for_ascii)
-
-add_exp_seeds(
-        exp_names=[
-            'rand',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        collator=add_collate_fn_for_rand)
-
-add_exp_seeds(
-        exp_names=[
-            'roberta-baby',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='roberta-base',
-        specify_epoch=retrain_epochs)
-
-add_exp_seeds(
-        exp_names=[
-            'normal_init',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='stand_norm/hf_20',
-        specify_epoch=retrain_epochs)
+# add_exp_seeds(
+#         exp_names=[
+#             'babylm-base',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='babylm-base')
 
 
-add_exp_seeds(
-        exp_names=[
-            'rt_shuffle-sentence',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='shuffle-sentence/hf_20',
-        specify_epoch=retrain_epochs)
+# add_exp_seeds(
+#         exp_names=[
+#             'babylm-test',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='babylm-test')
+
+# add_exp_seeds(
+#         exp_names=[
+#             'shuffle-sentence',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_sentence_shuffle)
+
+# add_exp_seeds(
+#         exp_names=[
+#             'shuffle-corpus',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_corpus_shuffle)
+
+# add_exp_seeds(
+#         exp_names=[
+#             'ascii',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         collator=add_collate_fn_for_ascii)
+
+# add_exp_seeds(
+#         exp_names=[
+#             'rand',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         collator=add_collate_fn_for_rand)
+
+# add_exp_seeds(
+#         exp_names=[
+#             'roberta-baby',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='roberta-base',
+#         specify_epoch=retrain_epochs)
+
+# add_exp_seeds(
+#         exp_names=[
+#             'normal_init',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='stand_norm/hf_20',
+#         specify_epoch=retrain_epochs)
 
 
-add_exp_seeds(
-        exp_names=[
-            'rt_shuffle-corpus',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='shuffle-corpus/hf_20',
-        specify_epoch=retrain_epochs)
+# add_exp_seeds(
+#         exp_names=[
+#             'rt_shuffle-sentence',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='shuffle-sentence/hf_20',
+#         specify_epoch=retrain_epochs)
 
 
-add_exp_seeds(
-        exp_names=[
-            'rt_rand',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='rand/hf_20',
-        specify_epoch=retrain_epochs)
+# add_exp_seeds(
+#         exp_names=[
+#             'rt_shuffle-corpus',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='shuffle-corpus/hf_20',
+#         specify_epoch=retrain_epochs)
 
 
-add_exp_seeds(
-        exp_names=[
-            'rt_ascii',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='ascii/hf_20',
-        specify_epoch=retrain_epochs)
+# add_exp_seeds(
+#         exp_names=[
+#             'rt_rand',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='rand/hf_20',
+#         specify_epoch=retrain_epochs)
 
 
-add_exp_seeds(
-        exp_names=[
-            'rt_shuffle-index',
-            ], 
-        seeds=[1], 
-        data_func=babyLM.get_babyLM_10M,
-        model_name='shuffle_index/hf_20',
-        specify_epoch=retrain_epochs)
+# add_exp_seeds(
+#         exp_names=[
+#             'rt_ascii',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='ascii/hf_20',
+#         specify_epoch=retrain_epochs)
+
+
+# add_exp_seeds(
+#         exp_names=[
+#             'rt_shuffle-index',
+#             ], 
+#         seeds=[1], 
+#         data_func=babyLM.get_babyLM_10M,
+#         model_name='shuffle_index/hf_20',
+#         specify_epoch=retrain_epochs)
