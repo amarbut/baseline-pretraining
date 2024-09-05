@@ -67,6 +67,14 @@ add_exp_seeds(
         data_func=babyLM.get_babyLM_10M,
         model_name='roberta_init')
 
+add_exp_seeds(
+        exp_names=[
+            'roberta_100M',
+            ], 
+        seeds=[1], 
+        data_func=babyLM.get_babyLM_100M,
+        model_name='roberta_init')
+
 # add_exp_seeds(
 #         exp_names=[
 #             'roberta_s1',
