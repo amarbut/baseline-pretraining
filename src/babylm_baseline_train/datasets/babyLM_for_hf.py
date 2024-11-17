@@ -60,6 +60,11 @@ class babyLM(datasets.GeneratorBasedBuilder):
                 data_url=os.path.join(_DATA_URL, 'shuffle_corp'),
                 description="Raw level dataset: the raw tokens before the addition of <unk> tokens. 100M tokens.",
             ),
+            babyLMConfig(
+                name="babyLM_1B",
+                data_url=os.path.join(_DATA_URL, 'babylm_1B'),
+                description="Raw level dataset: the raw tokens before the addition of <unk> tokens. 100M tokens.",
+            ),
             ]
 
     def _info(self):

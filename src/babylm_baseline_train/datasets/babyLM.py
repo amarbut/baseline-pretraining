@@ -57,3 +57,10 @@ def get_corpus_shuffle(seq_len=128, tokenizer=None, just_dataset=False):
             )
     return dataset_builder.get_group_dataset(just_dataset=just_dataset)
     
+def get_babyLM_1B(seq_len=128, tokenizer=None, just_dataset=False):
+    dataset_builder = BabyLM(
+            seq_len=seq_len,
+            tokenizer=tokenizer,
+            name='babyLM_1B',
+            )
+    return dataset_builder.get_group_dataset(just_dataset=just_dataset)
