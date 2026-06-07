@@ -1,50 +1,90 @@
-# Environment
+# BabyLM Baseline Pre-training (Extended Fork)
 
-Python 3.9, transformer package in huggingface, and datasets package in huggingface.
+This is a fork of [babylm/baseline-pretraining](https://github.com/babylm/baseline-pretraining), the official baseline training infrastructure for the [BabyLM shared task](https://babylm.github.io/). It is used as the pre-training and model extraction infrastructure for the weight distribution and initialization experiments in:
 
-And also install: https://github.com/chengxuz/pt_framework
+> **Searching for Nooks and Crannies: Geometric and Mechanistic Perspectives on Transformer Language Model Interpretability**
+> Anna C. Marbut. PhD dissertation, University of Montana (2026).
 
-Install the current repo using `pip install .` or `pip install -e .`.
+For the original BabyLM setup instructions (environment, data layout, base training commands), see the [upstream README](https://github.com/babylm/baseline-pretraining).
 
-## Where to put data
+## What This Fork Adds
 
-First, define the environment variable `BABYLM_ROOT_DIR` to be where your models and data will live.
-The downloaded data should be put at `${BABYLM_ROOT_DIR}/datasets/` so that this folder contains the following four subfolders: `babylm_100M`, `babylm_10M`, `babylm_dev`, and `babylm_test`. Note that the T5 training script expects .txt file inputs, so we create a single dev file by running this command in the `${BABYLM_ROOT_DIR}/datasets/babylm_dev/` folder: `cat *.dev > babylm_dev.txt`.
-The trained models will be put at `${BABYLM_ROOT_DIR}/models/` and the records will be put at `${BABYLM_ROOT_DIR}/model_recs/`.
+### Non-standard model variants
+The dissertation's initialization experiments compare standard RoBERTa pre-training against several non-standard pre-training procedures from the literature, to test whether geometric properties of the latent space predict performance independently of linguistic training task:
 
-# Training Command
+- **Alajrami random model** — randomly initialized weights, no pre-training ([Alajrami & Navigli, 2022](https://aclanthology.org/2022.acl-short.61/))
+- **ASCII prediction model** — pre-trained to predict ASCII character values rather than masked tokens (non-linguistic pre-training objective)
+- **Shuffled dataset variants** — pre-training on word- and sentence-shuffled corpora, disrupting sequential linguistic structure while preserving vocabulary distribution
 
-## OPT-125M
-Run the following command under the `scripts` folder.
+These are defined in `src/babylm_baseline_train/models/alajrami_models.py` and registered in `src/babylm_baseline_train/models/helper.py`.
+
+### Expanded training scale
+- **RoBERTa-100M** — RoBERTa trained on the full 100M token BabyLM dataset (in addition to the baseline 10M)
+- **1B dataset option** — support for training on the 1B token dataset
+- **Random initialization baseline** — untrained model at initialization, used as the reference point for weight movement analysis
+
+### Full checkpoint saving
+The original baseline saves only the final model. This fork adds support for saving checkpoints at each epoch, enabling the weight movement analysis in [`masking_and_analysis`](https://github.com/amarbut/masking_and_analysis) — which tracks how individual weights move from their initialized values across training.
+
+### HuggingFace conversion utility
+`src/babylm_baseline_train/models/model_load_save.py` adds utilities to load a checkpoint from a specific epoch and convert it to HuggingFace `save_pretrained` format, making trained models compatible with the HuggingFace ecosystem for downstream evaluation and geometric analysis.
+
+## Repository Structure (additions highlighted)
+
 ```
-python -m torch.distributed.launch --nproc_per_node=1 --master_port=29123 general_train.py --setting "BabyLM/exp_strict.py:opt125m_s1"
+src/babylm_baseline_train/
+  configs/
+    BabyLM/
+      exp_strict_mask.py       Modified to support additional model variants
+      general.py               General training configuration
+  datasets/
+    babyLM.py                  Extended with shuffled dataset variants and 1B option
+    babyLM_for_hf.py           HuggingFace-compatible dataset loader
+  models/
+    alajrami_models.py     [+] Non-standard model implementations (ASCII, random)
+    helper.py              [+] Model factory functions for all variants
+    model_load_save.py     [+] Epoch checkpoint loading + HuggingFace conversion
+  train/
+    tk_funcs.py            [+] Tokenizer utilities including pretrained tokenizer support
+
+scripts/
+  general_train.py         [+] Extended training script with full checkpoint saving
 ```
 
-This command will load a training setting specified by function `opt125m_s1` at `src/babylm_baseline_train/configs/BabyLM/exp_strict.py`.
+## Training the Extended Models
 
-## RoBERTa-Base
-Run the following command under the `scripts` folder.
+Training follows the same pattern as the upstream baseline. From the `scripts/` folder:
+
+```bash
+# Standard RoBERTa on 10M tokens
+python -m torch.distributed.launch --nproc_per_node=1 --master_port=29123 \
+    general_train.py --setting "BabyLM/exp_strict_mask.py:roberta_s1"
+
+# RoBERTa on 100M tokens
+python -m torch.distributed.launch --nproc_per_node=1 --master_port=29123 \
+    general_train.py --setting "BabyLM/exp_strict_mask.py:roberta_100M"
 ```
-python -m torch.distributed.launch --nproc_per_node=1 --master_port=29123 general_train.py --setting "BabyLM/exp_strict_mask.py:roberta_s1"
+
+## Converting Checkpoints to HuggingFace Format
+
+After training, convert epoch checkpoints for use with HuggingFace:
+
+```bash
+python -m babylm_baseline_train.models.model_load_save \
+    --model_loc <path_to_model_dir> \
+    --epoch 20
 ```
 
-## T5-Base
-Run the following command under the `scripts` folder.
+This saves the model in HuggingFace format to `<model_loc>/hf_20/`, ready for geometric analysis with the tools in `masking_and_analysis`.
+
+## Environment
+
+Python 3.9, HuggingFace `transformers` and `datasets`. Install with:
+
+```bash
+pip install -e .
 ```
-./train_t5_babylm.sh
-```
-Note that this training script uses a different backend than the OPT and RoBERTa models. This script is a slightly modified version of the `flax` T5 pre-training script from huggingface; the original [lives here](https://github.com/huggingface/transformers/tree/main/examples/flax/language-modeling).
 
-# Where important parameters are defined
+Also requires: [pt_framework](https://github.com/chengxuz/pt_framework)
 
-Learning rate schedule is defined at function `get_learning_rate_params` in script `basic_param_setter.py` under `src/babylm_baseline_train` folder.
-
-Optimizer is in the `scripts/general_train.py` script inside the `get_key_params` funciton.
-
-# How to load the pretrained models
-
-See the functions in `src/babylm_baseline_train/models/ckpt_loader.py`.
-
-# Questions?
-
-Feel free to open issues here. Or just contact us through Slack/emails.
+Set `BABYLM_ROOT_DIR` to the directory where models and data will live. Data should be at `${BABYLM_ROOT_DIR}/datasets/` with subfolders `babylm_10M`, `babylm_100M`, `babylm_dev`, `babylm_test`.
