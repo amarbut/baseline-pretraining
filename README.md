@@ -10,7 +10,7 @@ For the original BabyLM setup instructions (environment, data layout, base train
 ## What This Fork Adds
 
 ### Non-standard model variants
-The dissertation's initialization experiments compare standard RoBERTa pre-training against several non-standard pre-training procedures from the literature, to test whether geometric properties of the latent space predict performance independently of linguistic training task:
+Experiments in weight initialization compare standard RoBERTa pre-training against several non-standard pre-training procedures from the literature to test whether geometric properties of the latent space predict performance independently of linguistic training task:
 
 - **Alajrami random model** — randomly initialized weights, no pre-training ([Alajrami & Navigli, 2022](https://aclanthology.org/2022.acl-short.61/))
 - **ASCII prediction model** — pre-trained to predict ASCII character values rather than masked tokens (non-linguistic pre-training objective)
@@ -20,7 +20,7 @@ These are defined in `src/babylm_baseline_train/models/alajrami_models.py` and r
 
 ### Expanded training scale
 - **RoBERTa-100M** — RoBERTa trained on the full 100M token BabyLM dataset (in addition to the baseline 10M)
-- **1B dataset option** — support for training on the 1B token dataset
+- **1B dataset option** — support for training on a 1B token dataset
 - **Random initialization baseline** — untrained model at initialization, used as the reference point for weight movement analysis
 
 ### Full checkpoint saving
